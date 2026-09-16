@@ -1,0 +1,14 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="logoTitle">
+  <title id="logoTitle">SRC FleetOps logo</title>
+  <defs>
+    <linearGradient id="srcGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F2A93B"/>
+      <stop offset="100%" stop-color="#C97F1F"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="120" height="120" rx="26" fill="url(#srcGradient)"/>
+  <text x="60" y="70" font-family="'Space Grotesk', Arial, sans-serif" font-weight="700"
+        font-size="34" fill="#0B0F14" text-anchor="middle" letter-spacing="1">SRC</text>
+  <circle cx="94" cy="26" r="7" fill="none" stroke="#33C6B7" stroke-width="1.6" opacity="0.5"/>
+  <circle cx="94" cy="26" r="4.2" fill="#33C6B7" stroke="#0B0F14" stroke-width="1.4"/>
+</svg>

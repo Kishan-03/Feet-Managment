@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FleetOps Control Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+
+</head>
+<body>
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="segmented-control login-toggle">
+        <a href="index.html" class="active">Admin</a>
+        <a href="driver.html">Driver</a>
+      </div>
+
+      <div class="login-brand">
+        <svg class="brand-mark" viewBox="0 0 120 120" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="srcGradientLogin" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#F2A93B"/>
+              <stop offset="100%" stop-color="#C97F1F"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="120" height="120" rx="26" fill="url(#srcGradientLogin)"/>
+          <text x="60" y="70" font-family="'Space Grotesk',Arial,sans-serif" font-weight="700"
+                font-size="34" fill="#0B0F14" text-anchor="middle" letter-spacing="1">SRC</text>
+          <circle cx="94" cy="26" r="7" fill="none" stroke="#33C6B7" stroke-width="1.6" opacity="0.5"/>
+          <circle cx="94" cy="26" r="4.2" fill="#33C6B7" stroke="#0B0F14" stroke-width="1.4"/>
+        </svg>
+        <div>
+          <strong>Shyam road carrier</strong>
+          <span>CONTROL CENTER</span>
+        </div>
+      </div>
+
+      <p class="eyebrow" style="margin-top:22px;">Restricted access</p>
+      <h2 style="font-family:var(--font-display);font-size:19px;margin:2px 0 18px;">Admin sign-in</h2>
+
+      <form id="loginForm" class="booking-form">
+        <label>Admin password
+          <input type="password" id="loginPassword" placeholder="Enter admin password" required autocomplete="current-password" />
+        </label>
+        <p class="login-error" id="loginError">Incorrect password. Try again.</p>
+        <button class="primary-action full" type="button" id="loginSubmit">Sign in</button>
+      </form>
+      <p class="login-hint">Authorized personnel only &middot; contact IT for access</p>
+    </div>
+  </div>
+
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <button class="brand" id="brandHome" type="button" aria-label="Go to home">
+        <svg class="brand-mark" viewBox="0 0 120 120" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="srcGradientSidebar" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#F2A93B"/>
+              <stop offset="100%" stop-color="#C97F1F"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="120" height="120" rx="26" fill="url(#srcGradientSidebar)"/>
+          <text x="60" y="70" font-family="'Space Grotesk',Arial,sans-serif" font-weight="700"
+                font-size="34" fill="#0B0F14" text-anchor="middle" letter-spacing="1">SRC</text>
+          <circle cx="94" cy="26" r="7" fill="none" stroke="#33C6B7" stroke-width="1.6" opacity="0.5"/>
+          <circle cx="94" cy="26" r="4.2" fill="#33C6B7" stroke="#0B0F14" stroke-width="1.4"/>
+        </svg>
+        <div>
+          <strong>Shyam road carrier</strong>
+          <span>CONTROL CENTER</span>
+        </div>
+      </button>
+
+      <div class="sidebar-feature" aria-hidden="true">
+        <img src="truck-side.jpg" alt="" class="sidebar-feature-img">
+        <div class="sidebar-feature-caption">
+          <strong>Fleet on NH44</strong>
+          <span>Live · en route</span>
+        </div>
+      </div>
+
+      <div class="sidebar-status">
+        <span class="status-dot"></span>
+        <div>
+          <strong>Live operations</strong>
+          <span id="clock">--:--:--</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-heading">
+          <button class="back-button" id="backHome" type="button">&larr; Back to Home</button>
+          <div>
+            <p class="eyebrow">Logistics command dashboard</p>
+            <h1 id="pageTitle">FleetOps Control Center</h1>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <div class="search-wrap">
+            <button class="icon-button" type="button" id="searchToggle" title="Search vehicles and dock slots" aria-label="Search" aria-expanded="false">⌕</button>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search plate, driver, dock..." aria-label="Search vehicles and dock slots" />
+          </div>
+          <div class="notif-wrap">
+            <button class="icon-button" type="button" id="notifToggle" title="Notifications" aria-label="Notifications" aria-expanded="false">
+              !
+              <span class="notif-badge" id="notifBadge">3</span>
+            </button>
+            <div class="notif-dropdown" id="notifDropdown">
+              <div class="notif-dropdown-header">Notifications</div>
+              <div id="notifDynamic"></div>
+              <div class="notif-item">
+                <strong>Dock 3 congestion</strong>
+                <span>SMS sent to 3 drivers with revised arrival windows.</span>
+              </div>
+              <div class="notif-item">
+                <strong>Priority dispatch approved</strong>
+                <span>RJ 14 KT 4107 moved to the next available slot.</span>
+              </div>
+            </div>
+          </div>
+          <button class="primary-action" type="button" id="quickAction">Assign Driver</button>
+          <button class="icon-button" type="button" id="adminLogoutBtn" title="Sign out" aria-label="Sign out">⏻</button>
+        </div>
+
+        <!-- Assign Driver modal -->
+        <div class="modal-overlay" id="assignOverlay">
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="assignTitle">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Dispatch</p>
+                <h2 id="assignTitle">Assign driver</h2>
+              </div>
+              <button class="icon-button" type="button" id="assignClose" aria-label="Close">&times;</button>
+            </div>
+            <form id="assignForm" class="booking-form">
+              <label>Vehicle
+                <select id="assignVehicle" required></select>
+              </label>
+              <label>Driver name
+                <input type="text" id="assignDriverName" placeholder="e.g. R. Deshmukh" required />
+              </label>
+              <button class="primary-action full" type="submit">Confirm assignment</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Edit Vehicle Health modal -->
+        <div class="modal-overlay" id="healthOverlay">
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="healthTitle">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Fleet</p>
+                <h2 id="healthTitle">Edit vehicle health</h2>
+              </div>
+              <button class="icon-button" type="button" id="healthClose" aria-label="Close">&times;</button>
+            </div>
+            <form id="healthForm" class="booking-form">
+              <label>Vehicle
+                <input type="text" id="healthPlate" readonly />
+              </label>
+              <label>Health status
+                <select id="healthStatus" required>
+                  <option value="healthy">Healthy</option>
+                  <option value="warning">Needs attention</option>
+                  <option value="critical">Critical</option>
+                </select>
+              </label>
+              <label>Status note
+                <input type="text" id="healthNote" placeholder="e.g. Brake inspection flagged" required />
+              </label>
+              <button class="primary-action full" type="submit">Save changes</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="toast-container" id="toastContainer"></div>
+      </header>
+
+      <!-- FLEET VIEW -->
+      <!-- HOME VIEW -->
+      <section class="view active" id="homeView" data-title="FleetOps Control Center">
+        <div class="home-main">
+          <section class="home-intro">
+            <p class="eyebrow">Where to next?</p>
+            <h2>Pick a section to get started</h2>
+          </section>
+
+          <section class="home-cards">
+            <button class="home-card" type="button" data-view="fleet">
+              <span class="home-card-icon" aria-hidden="true">▣</span>
+              <div class="home-card-body">
+                <h3>Fleet Dashboard</h3>
+                <p>Vehicle health, live map, fuel usage, and maintenance reminders.</p>
+              </div>
+              <span class="home-card-arrow" aria-hidden="true">→</span>
+            </button>
+
+            <button class="home-card" type="button" data-view="dock">
+              <span class="home-card-icon" aria-hidden="true">◫</span>
+              <div class="home-card-body">
+                <h3>Dock Scheduler</h3>
+                <p>Book loading slots, view today's schedule, and manage the yard queue.</p>
+              </div>
+              <span class="home-card-arrow" aria-hidden="true">→</span>
+            </button>
+
+            <button class="home-card" type="button" data-view="drivers">
+              <span class="home-card-icon" aria-hidden="true">₹</span>
+              <div class="home-card-body">
+                <h3>Driver Payroll</h3>
+                <p>Review salaries, record payments, and edit driver details.</p>
+              </div>
+              <span class="home-card-arrow" aria-hidden="true">→</span>
+            </button>
+
+            <button class="home-card" type="button" data-view="fuel">
+              <span class="home-card-icon" aria-hidden="true">⛽</span>
+              <div class="home-card-body">
+                <h3>Fuel Theft Detection</h3>
+                <p>Compare expected vs. actual fuel usage and catch suspicious fill-ups.</p>
+              </div>
+              <span class="home-card-arrow" aria-hidden="true">→</span>
+            </button>
+          </section>
+        </div>
+
+        <aside class="home-side" aria-hidden="true">
+          <img src="truck-side.jpg" alt="" class="home-side-img">
+          <div class="home-side-caption">
+            <strong>On the road, every route</strong>
+            <span>Live tracking across highway and yard</span>
+          </div>
+        </aside>
+      </section>
+
+      <!-- FLEET VIEW -->
+      <section class="view" id="fleetView" data-title="Fleet Management Dashboard">
+        <section class="metrics-grid" aria-label="Fleet summary">
+          <article class="metric">
+            <span>Active vehicles</span>
+            <strong data-flap="42">42</strong>
+            <em>38 moving, 4 idle</em>
+          </article>
+          <article class="metric">
+            <span>Fuel efficiency</span>
+            <strong data-flap="7.8">7.8 km/L</strong>
+            <em>+4.2% this week</em>
+          </article>
+          <article class="metric warning" id="maintMetricCard">
+            <span>Maintenance due</span>
+            <strong id="maintDueCount">6</strong>
+            <em id="maintDueNote">2 critical reminders</em>
+          </article>
+          <article class="metric success" id="healthyMetricCard">
+            <span>Healthy vehicles</span>
+            <strong id="healthyPct">86%</strong>
+            <em>Engine, tire, battery checks</em>
+          </article>
+        </section>
+
+        <section class="fleet-layout">
+          <div class="operations-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Vehicle list</p>
+                <h2>Assignments and health</h2>
+              </div>
+              <select id="vehicleFilter" aria-label="Filter vehicles">
+                <option value="all">All vehicles</option>
+                <option value="healthy">Healthy</option>
+                <option value="warning">Needs attention</option>
+                <option value="critical">Critical</option>
+              </select>
+            </div>
+            <div class="vehicle-list" id="vehicleList"></div>
+          </div>
+
+          <div class="map-panel" aria-label="Vehicle location map">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Vehicle location</p>
+                <h2>Live fleet map</h2>
+              </div>
+              <span class="pill">GPS online</span>
+            </div>
+            <div class="map-visual">
+              <span class="road road-a"></span>
+              <span class="road road-b"></span>
+              <span class="road road-c"></span>
+              <button class="vehicle-pin pin-a" type="button" data-truck="MH 12 AX 4581" data-eta="Inbound to Dock 3, ETA 18 min">T1</button>
+              <button class="vehicle-pin pin-b" type="button" data-truck="KA 05 TR 7812" data-eta="En route on NH48, ETA 41 min">T2</button>
+              <button class="vehicle-pin pin-c alert" type="button" data-truck="DL 01 FR 2280" data-eta="Idle - brake inspection flagged">T3</button>
+              <button class="vehicle-pin pin-d" type="button" data-truck="GJ 18 LM 5524" data-eta="Inbound to Dock 1, ETA 9 min">T4</button>
+              <div class="map-callout" id="mapCallout">
+                <strong id="calloutPlate">MH 12 AX 4581</strong>
+                <span id="calloutEta">Inbound to Dock 3, ETA 18 min</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="analytics-grid">
+          <div class="chart-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Fuel usage dashboard</p>
+                <h2>Weekly consumption</h2>
+              </div>
+            </div>
+            <div class="fuel-chart" aria-label="Fuel usage by day">
+              <div style="--h: 52%"><span>Mon</span></div>
+              <div style="--h: 76%"><span>Tue</span></div>
+              <div style="--h: 61%"><span>Wed</span></div>
+              <div style="--h: 88%"><span>Thu</span></div>
+              <div style="--h: 69%"><span>Fri</span></div>
+              <div style="--h: 43%"><span>Sat</span></div>
+              <div style="--h: 34%"><span>Sun</span></div>
+            </div>
+          </div>
+
+          <div class="reminders-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Maintenance reminders</p>
+                <h2>Upcoming service</h2>
+              </div>
+            </div>
+            <ul class="timeline">
+              <li><strong>Brake inspection</strong><span>DL 01 FR 2280 — Today, 4:30 PM</span></li>
+              <li><strong>Oil change</strong><span>KA 05 TR 7812 — Tomorrow, 10:00 AM</span></li>
+              <li><strong>Tire rotation</strong><span>GJ 18 LM 5524 — 12 Jul 2026</span></li>
+            </ul>
+          </div>
+        </section>
+      </section>
+
+      <!-- DOCK VIEW -->
+      <section class="view" id="dockView" data-title="Smart Loading Dock Scheduler">
+        <section class="metrics-grid" aria-label="Dock summary">
+          <article class="metric">
+            <span>Booked slots</span>
+            <strong id="bookedCount" data-flap="18">18</strong>
+            <em>Across 6 loading docks</em>
+          </article>
+          <article class="metric success">
+            <span>Average wait</span>
+            <strong data-flap="22">22 min</strong>
+            <em>Down from 41 min</em>
+          </article>
+          <article class="metric warning">
+            <span>Delayed arrivals</span>
+            <strong id="delayCount" data-flap="3">3</strong>
+            <em>Notifications sent</em>
+          </article>
+          <article class="metric">
+            <span>Queue status</span>
+            <strong id="queueCount" data-flap="7">7</strong>
+            <em>2 priority vehicles</em>
+          </article>
+        </section>
+
+        <section class="dock-layout">
+          <div class="booking-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Book a loading slot</p>
+                <h2>New dock appointment</h2>
+              </div>
+            </div>
+            <form class="booking-form" id="bookingForm">
+              <label>Vehicle number
+                <input type="text" name="vehicle" placeholder="MH 12 AX 4581" required />
+              </label>
+              <label>Dock
+                <select name="dock" required>
+                  <option>Dock 1</option><option>Dock 2</option><option>Dock 3</option><option>Dock 4</option>
+                </select>
+              </label>
+              <label>Time slot
+                <input type="time" name="time" value="14:30" required />
+              </label>
+              <label>Load type
+                <select name="load" required>
+                  <option>Outbound shipment</option>
+                  <option>Inbound raw material</option>
+                  <option>Returns</option>
+                  <option>Priority dispatch</option>
+                </select>
+              </label>
+              <button class="primary-action full" type="submit">Book Slot</button>
+            </form>
+          </div>
+
+          <div class="schedule-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">View dock schedule</p>
+                <h2>Today</h2>
+              </div>
+              <div class="segmented-control" aria-label="Schedule density">
+                <button class="active" type="button">Live</button>
+                <button type="button">Day</button>
+                <button type="button">Week</button>
+              </div>
+            </div>
+            <div class="schedule-list" id="scheduleList"></div>
+          </div>
+        </section>
+
+        <section class="dock-bottom">
+          <div class="queue-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Live queue status</p>
+                <h2>Yard movement</h2>
+              </div>
+              <button class="secondary-action" id="advanceQueue" type="button">Advance Queue</button>
+            </div>
+            <div class="queue-lanes" id="queueLanes"></div>
+          </div>
+
+          <div class="admin-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Admin scheduling panel</p>
+                <h2>Delay notifications</h2>
+              </div>
+            </div>
+            <div class="notice-list" id="noticeList">
+              <article>
+                <strong>Dock 3 congestion</strong>
+                <span>SMS sent to 3 drivers with revised arrival windows.</span>
+              </article>
+              <article>
+                <strong>Priority dispatch approved</strong>
+                <span>Vehicle RJ 14 KT 4107 moved to the next available slot.</span>
+              </article>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- HELP VIEW -->
+      <section class="view" id="driversView" data-title="Driver Payroll &amp; Records">
+        <section class="metrics-grid" aria-label="Payroll summary">
+          <article class="metric">
+            <span>Total drivers</span>
+            <strong id="payrollDriverCount">—</strong>
+            <em>Active accounts</em>
+          </article>
+          <article class="metric">
+            <span>Monthly payroll</span>
+            <strong id="payrollTotal">—</strong>
+            <em>Net pay, all drivers</em>
+          </article>
+          <article class="metric warning" id="payrollAdvanceCard">
+            <span>Pending advances</span>
+            <strong id="payrollAdvanceCount">—</strong>
+            <em id="payrollAdvanceNote">—</em>
+          </article>
+        </section>
+
+        <section class="operations-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Payroll</p>
+              <h2>Drivers</h2>
+            </div>
+            <button class="secondary-action" type="button" id="addDriverBtn">+ Add driver</button>
+          </div>
+          <div class="driver-admin-list" id="driverAdminList"></div>
+        </section>
+      </section>
+
+      <!-- FUEL THEFT DETECTION VIEW -->
+      <section class="view" id="fuelView" data-title="Fuel Monitoring Dashboard">
+        <section class="metrics-grid" aria-label="Fuel summary">
+          <article class="metric">
+            <span>Fuel used</span>
+            <strong id="fuelUsedTotal">—</strong>
+            <em>All logged entries</em>
+          </article>
+          <article class="metric">
+            <span>Fuel cost</span>
+            <strong id="fuelCostTotal">—</strong>
+            <em>All logged entries</em>
+          </article>
+          <article class="metric warning">
+            <span>Alerts</span>
+            <strong id="fuelAlertCount">—</strong>
+            <em>Warning or above</em>
+          </article>
+          <article class="metric critical" id="fuelHighRiskCard">
+            <span>High-risk alerts</span>
+            <strong id="fuelHighRiskCount">—</strong>
+            <em id="fuelHighRiskNote">—</em>
+          </article>
+        </section>
+
+        <section class="dock-layout">
+          <div class="booking-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Log a fill-up</p>
+                <h2>New fuel entry</h2>
+              </div>
+            </div>
+            <form class="booking-form" id="fuelForm">
+              <label>Vehicle
+                <select id="fuelVehicle" required></select>
+              </label>
+              <label>Fuel station
+                <input type="text" id="fuelStation" placeholder="e.g. Indian Oil" required />
+              </label>
+              <label>Receipt number
+                <input type="text" id="fuelReceipt" placeholder="e.g. IOC48213" required />
+              </label>
+              <label>Litres filled
+                <input type="number" id="fuelLitres" min="1" step="0.1" placeholder="e.g. 120" required />
+              </label>
+              <label>Price per litre (₹)
+                <input type="number" id="fuelPrice" min="1" step="0.1" placeholder="e.g. 105" required />
+              </label>
+              <label>Trip distance since last fill (km)
+                <input type="number" id="fuelDistance" min="0" step="1" placeholder="Leave blank if no active trip" />
+              </label>
+              <label>Date
+                <input type="text" id="fuelDate" placeholder="e.g. 25 Aug" required />
+              </label>
+              <label>Time
+                <input type="time" id="fuelTime" required />
+              </label>
+              <p class="login-error" id="fuelFormError">This entry needs a closer look.</p>
+              <button class="primary-action full" type="submit">Log fuel entry</button>
+            </form>
+          </div>
+
+          <div class="operations-panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Theft detection</p>
+                <h2>Fuel log &amp; alerts</h2>
+              </div>
+              <select id="fuelFilter" aria-label="Filter fuel alerts">
+                <option value="all">All entries</option>
+                <option value="normal">Normal</option>
+                <option value="warning">Warning</option>
+                <option value="high">High risk</option>
+              </select>
+            </div>
+            <div class="fuel-list" id="fuelList"></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- Edit Driver / Salary modal -->
+      <div class="modal-overlay" id="driverEditOverlay">
+        <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="driverEditTitle">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Payroll</p>
+              <h2 id="driverEditTitle">Edit driver</h2>
+            </div>
+            <button class="icon-button" type="button" id="driverEditClose" aria-label="Close">&times;</button>
+          </div>
+
+          <div class="segmented-control driver-edit-tabs" id="driverEditTabs">
+            <button type="button" class="driver-edit-tab-btn active" data-tab="profile">Profile</button>
+            <button type="button" class="driver-edit-tab-btn" data-tab="route">Route</button>
+            <button type="button" class="driver-edit-tab-btn" data-tab="documents">Documents</button>
+            <button type="button" class="driver-edit-tab-btn" data-tab="history">History</button>
+          </div>
+
+          <p class="driver-edit-error" id="driverEditError">Enter a Driver ID and a 4-digit PIN.</p>
+
+          <form id="driverEditForm" class="booking-form">
+            <div class="driver-edit-scroll">
+
+              <!-- PROFILE & SALARY TAB -->
+              <div class="driver-edit-tab-panel active" data-tab-panel="profile">
+                <label>Driver ID
+                  <input type="text" id="editDriverId" placeholder="e.g. 0003" autocomplete="off" required />
+                </label>
+                <label>Login PIN (4 digits)
+                  <input type="password" id="editDriverPin" placeholder="4-digit PIN" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="off" required />
+                </label>
+                <label>Name
+                  <input type="text" id="editDriverName" required />
+                </label>
+                <label>Vehicle plate
+                  <input type="text" id="editDriverPlate" required />
+                </label>
+                <label>Base salary (₹)
+                  <input type="number" id="editBase" min="0" step="100" required />
+                </label>
+                <label>Trip bonus (₹)
+                  <input type="number" id="editTripBonus" min="0" step="100" required />
+                </label>
+                <label>Fuel allowance (₹)
+                  <input type="number" id="editFuelAllowance" min="0" step="100" required />
+                </label>
+                <label>Advance to recover (₹)
+                  <input type="number" id="editAdvance" min="0" step="100" required />
+                </label>
+                <label>Provident fund (₹)
+                  <input type="number" id="editPf" min="0" step="100" required />
+                </label>
+                <p class="driver-edit-net">Net pay this month: <strong id="editNetPreview">₹0</strong></p>
+              </div>
+
+              <!-- ROUTE TAB -->
+              <div class="driver-edit-tab-panel" data-tab-panel="route">
+                <label>Route distance
+                  <input type="text" id="editRouteDistance" placeholder="e.g. 186 km" />
+                </label>
+                <label>Vehicle shown on route
+                  <input type="text" id="editRouteVehicle" placeholder="e.g. MH 12 AX 4581" />
+                </label>
+                <p class="eyebrow dyn-list-label">Stops</p>
+                <div class="dyn-list" id="editRouteStops"></div>
+                <button type="button" class="secondary-action dyn-add-btn" id="addStopBtn">+ Add stop</button>
+              </div>
+
+              <!-- DOCUMENTS TAB -->
+              <div class="driver-edit-tab-panel" data-tab-panel="documents">
+                <p class="eyebrow dyn-list-label">Documents</p>
+                <div class="dyn-list" id="editDocuments"></div>
+                <button type="button" class="secondary-action dyn-add-btn" id="addDocBtn">+ Add document</button>
+              </div>
+
+              <!-- HISTORY TAB -->
+              <div class="driver-edit-tab-panel" data-tab-panel="history">
+                <p class="eyebrow dyn-list-label">Salary history (last months)</p>
+                <div class="dyn-list" id="editSalaryHistoryList"></div>
+                <button type="button" class="secondary-action dyn-add-btn" id="addHistoryBtn">+ Add month</button>
+              </div>
+
+            </div>
+
+            <div class="driver-edit-actions">
+              <button class="secondary-action full" type="button" id="recordPaymentBtn">Record this month's payment</button>
+              <button class="primary-action full" type="submit">Save changes</button>
+              <button class="danger-action full" type="button" id="deleteDriverBtn">Remove driver</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+<script src="api.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
